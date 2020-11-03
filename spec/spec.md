@@ -28,7 +28,7 @@ WACI is a draft specification under development by Bloom and Affinidi.
 
 ## QR Code Or Link
 
-If the user is using an app/webiste on something other than the device that their wallet is on then they would be able to scan a QR code with the wallet. _But_ if the user is the device that also has their wallet then they wouldn't be able to scan a QR code, they would need to be able to click a link that will open their mobile wallet.
+If the user is using an app/webiste on something other than the device that their wallet is on then they would be able to scan a QR code with the wallet. _But_ if the user is using the device that also has their wallet then they wouldn't be able to scan a QR code, they would need to be able to click a link that will open their mobile wallet.
 
 There are of course other use cases where you might need one over the other or both. For example in an email you may want to display both a link and a QR code because you won't be able to dynamically choose between the two.
 
