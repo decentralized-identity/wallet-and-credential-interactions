@@ -227,13 +227,66 @@ In addition to the standard [Callback URL Response](#response) payload, the offe
 
 <section>
 
-![QR based flow](./assets/offer-claim/qr.png)
+```mermaid
+sequenceDiagram
+  title: Offer/Claim (QR)
+
+  activate Wallet
+
+  Wallet ->>+ Issuer's Interface: Scan QR Code
+  Issuer's Interface -->>- Wallet: Retrieve `challengeTokenUrl`
+
+  Wallet ->>+ Issuer: GET `challengeTokenUrl`
+  Issuer -->> Wallet: Return `challengeToken`
+
+  Wallet ->> Wallet: Verify/decode `challengeToken`
+  Wallet ->> Wallet: Create/sign `responseToken` based on `challengeToken`
+
+  Wallet ->> Issuer: POST `responseToken` to `challengeToken`'s `callBackUrl`
+  Issuer ->> Issuer: Verify `responseToken`
+  Issuer ->> Issuer: Verify `responseToken`'s `challenge` (valid JWT, signed by issuer, and not used before)
+  Issuer -->>- Wallet: Return list of signed credentials
+
+  Wallet ->> Wallet: Store credentials
+
+  Wallet ->> Browser: If provided open `redirectUrl`
+
+  deactivate Wallet
+```
 
 </section>
 
 <section>
 
-![Link based flow](./assets/offer-claim/link.png)
+```mermaid
+sequenceDiagram
+  title: Offer/Claim (Link)
+
+  User ->>+ Issuer's Interface: Click link
+
+  Issuer's Interface ->>- Wallet: Open Wallet with deep link
+
+  activate Wallet
+
+  Wallet ->> Wallet: Parse deep link
+
+  Wallet ->>+ Issuer: GET `challengeTokenUrl`
+  Issuer -->> Wallet: Return `challengeToken`
+
+  Wallet ->> Wallet: Verify/decode `challengeToken`
+  Wallet ->> Wallet: Create/sign `responseToken` based on `challengeToken`
+
+  Wallet ->> Issuer: POST `responseToken` to `challengeToken`'s `callBackUrl`
+  Issuer ->> Issuer: Verify `responseToken`
+  Issuer ->> Issuer: Verify `responseToken`'s `challenge` (valid JWT, signed by issuer, and not used before)
+  Issuer -->>- Wallet: Return list of signed credentials
+
+  Wallet ->> Wallet: Store credentials
+
+  Wallet ->> Browser: If provided open `redirectUrl`
+
+  deactivate Wallet
+```
 
 </section>
 
@@ -310,13 +363,62 @@ The request/share flow does not add anything to the [Callback URL Response]().
 
 <section>
 
-![QR based flow](./assets/request-share/qr.png)
+```mermaid
+sequenceDiagram
+  title: Request/Share (QR)
+
+  activate Wallet
+
+  Wallet ->>+ Verifier's Interface: Scan QR Code
+  Verifier's Interface -->>- Wallet: Retrieve `challengeTokenUrl`
+
+  Wallet ->>+ Verifier: GET `challengeTokenUrl`
+  Verifier -->> Wallet: Return `challengeToken`
+
+  Wallet ->> Wallet: Verify/decode `challengeToken`
+  Wallet ->> Wallet: Create/sign a VP, with `challengeToken` as the `challenge`
+
+  Wallet ->> Verifier: POST the VP to `challengeToken`'s `callBackUrl`
+  Verifier ->> Verifier: Verify the VP
+  Verifier ->> Verifier: Verify the VP's challenge token (valid JWT, signed by verifier, and not used before)
+  Verifier -->>- Wallet: Return success
+
+  Wallet ->> Browser: If provided open `redirectUrl`
+
+  deactivate Wallet
+```
 
 </section>
 
 <section>
 
-![Link based flow](./assets/request-share/link.png)
+```mermaid
+sequenceDiagram
+  title: Request/Share (QR)
+
+  User ->>+ Verifiers's Interface: Click link
+
+  Verifiers's Interface ->>- Wallet: Open Wallet with deep link
+
+  activate Wallet
+
+  Wallet ->> Wallet: Parse deep link
+
+  Wallet ->>+ Verifier: GET `challengeTokenUrl`
+  Verifier -->> Wallet: Return `challengeToken`
+
+  Wallet ->> Wallet: Verify/decode `challengeToken`
+  Wallet ->> Wallet: Create/sign a VP, with `challengeToken` as the `challenge`
+
+  Wallet ->> Verifier: POST the VP to `challengeToken`'s `callBackUrl`
+  Verifier ->> Verifier: Verify the VP
+  Verifier ->> Verifier: Verify the VP's challenge token (valid JWT, signed by verifier, and not used before)
+  Verifier -->>- Wallet: Return success
+
+  Wallet ->> Browser: If provided open `redirectUrl`
+
+  deactivate Wallet
+```
 
 </section>
 
