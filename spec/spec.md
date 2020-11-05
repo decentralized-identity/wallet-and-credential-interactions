@@ -48,17 +48,17 @@ This is the payload that is displayed in a QR code or added as a query param to 
 
 ```json
 {
-  "tokenUrl": "https://example.com/api/get-token/fb28b4ec-4209-4b78-8507-7cc49164cb37"
+  "challengeTokenUrl": "https://example.com/api/get-token/fb28b4ec-4209-4b78-8507-7cc49164cb37"
 }
 ```
 
-- `tokenUrl`:
+- `challengeTokenUrl`:
   - MUST be unique to the interaction
   - MUST be a `GET` endpoint that returns the [Token Payload](#token-url-response)
 
 ### Token URL Response
 
-The result from `GET`ing the provided `tokenUrl`. This contains the initial JWT that really starts the interaction.
+The result from `GET`ing the provided `challengeTokenUrl`. This contains the initial JWT that really starts the interaction.
 
 ```json
 {
@@ -313,7 +313,7 @@ An example of a `request` challenge token has the following properties (in addit
     "callbackUrl": "https://example.com/api/callback-url",
     "purpose": "request",
     /* Using [Presentation Exchange](https://identity.foundation/presentation-exchange/) to define the requirements */
-    "presentationDefinition": {
+    "presentation_definition": {
       // ...
     }
   }
@@ -322,7 +322,7 @@ An example of a `request` challenge token has the following properties (in addit
 
 - `payload`
   - `purpose` MUST be `"request"`
-  - MUST have `presentationDefinition`
+  - MUST have `presentation_definition`
 
 ### Callback URL
 
