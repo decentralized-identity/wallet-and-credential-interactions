@@ -131,7 +131,7 @@ __OR__
 }
 ```
 
-This could be be used to follow up a request interaction with an offer interaction, or even a chain of request interactions that are based on the previously shared VCs.
+This could be used to follow up a request interaction with an offer interaction, or even a chain of request interactions that are based on the previously shared VCs.
 
 ## Offer/Claim
 
