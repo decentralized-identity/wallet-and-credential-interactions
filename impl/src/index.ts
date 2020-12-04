@@ -15,7 +15,7 @@ export type WACIResponseJWTPayload = JWTPayload & {
 // Offer / Claim
 
 export type OfferChallengeJWTPayloadV1 = WACIChallengeJWTPayload<'1'> & {
-  credential_manifest: {}[]
+  credential_manifest: Record<string, any>[]
 }
 
 export type OfferChallengeJWTPayload = OfferChallengeJWTPayloadV1
@@ -114,7 +114,7 @@ export const offerResponseJwtVerify = async (
 // Request / Share
 
 export type RequestChallengeJWTPayloadV1 = WACIChallengeJWTPayload<'1'> & {
-  presentation_definition: {}
+  presentation_definition: Record<string, any>
 }
 
 export type RequestChallengeJWTPayload = RequestChallengeJWTPayloadV1
