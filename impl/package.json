@@ -10,6 +10,9 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": "^12"
+  },
   "scripts": {
     "build": "tsdx build --target node",
     "test": "npm run build && npm run test:only",
@@ -47,9 +50,6 @@
     ],
     "require": [
       "ts-node/register"
-    ],
-    "nodeArguments": [
-      "--experimental-modules"
     ]
   }
 }
