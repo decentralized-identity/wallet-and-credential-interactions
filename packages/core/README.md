@@ -1,3 +1,3 @@
-# @waci/jose
+# @waci/core
 
-Thin wrapper around `jose` for creating and verifying WACI JWTs.
+Typescipt types to be used in any implementation of WACI
