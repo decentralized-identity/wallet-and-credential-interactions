@@ -188,19 +188,19 @@ sequenceDiagram
 
   activate Wallet
 
-  Wallet ->>+ Verifier's Interface: Scan QR Code
-  Verifier's Interface -->>- Wallet: Retrieve `challengeTokenUrl`
+  Wallet ->>+ Relying Party's Interface: Scan QR Code
+  Relying Party's Interface -->>- Wallet: Retrieve `challengeTokenUrl`
 
-  Wallet ->>+ Verifier: GET `challengeTokenUrl`
-  Verifier -->> Wallet: Return `challengeToken`
+  Wallet ->>+ Relying Party: GET `challengeTokenUrl`
+  Relying Party -->> Wallet: Return `challengeToken`
 
   Wallet ->> Wallet: Verify/decode `challengeToken`
   Wallet ->> Wallet: Create/sign a `responseToken`, with `challengeToken` as the `challenge`
 
-  Wallet ->> Verifier: POST the `responseToken` to `challengeToken`'s `callBackUrl`
-  Verifier ->> Verifier: Verify the `responseToken`
-  Verifier ->> Verifier: Verify the `responseToken`'s challenge token (valid JWT, signed by verifier, and not used before)
-  Verifier -->>- Wallet: Return success
+  Wallet ->> Relying Party: POST the `responseToken` to `challengeToken`'s `callBackUrl`
+  Relying Party ->> Relying Party: Verify the `responseToken`
+  Relying Party ->> Relying Party: Verify the `responseToken`'s challenge token (valid JWT, signed by Relying Party, and not used before)
+  Relying Party -->>- Wallet: Return success
 
   opt `redirectUrl` or `challengeToken` is provided
     alt `redirectUrl` is provided
@@ -221,24 +221,24 @@ sequenceDiagram
 sequenceDiagram
   title: Interaction (Link)
 
-  User ->>+ Verifiers's Interface: Click link
+  User ->>+ Relying Party's Interface: Click link
 
-  Verifiers's Interface ->>- Wallet: Open Wallet with deep link
+  Relying Party's Interface ->>- Wallet: Open Wallet with deep link
 
   activate Wallet
 
   Wallet ->> Wallet: Parse deep link
 
-  Wallet ->>+ Verifier: GET `challengeTokenUrl`
-  Verifier -->> Wallet: Return `challengeToken`
+  Wallet ->>+ Relying Party: GET `challengeTokenUrl`
+  Relying Party -->> Wallet: Return `challengeToken`
 
   Wallet ->> Wallet: Verify/decode `challengeToken`
   Wallet ->> Wallet: Create/sign a `responseToken`, with `challengeToken` as the `challenge`
 
-  Wallet ->> Verifier: POST the `responseToken` to `challengeToken`'s `callBackUrl`
-  Verifier ->> Verifier: Verify the `responseToken`
-  Verifier ->> Verifier: Verify the `responseToken`'s challenge token (valid JWT, signed by verifier, and not used before)
-  Verifier -->>- Wallet: Return success
+  Wallet ->> Relying Party: POST the `responseToken` to `challengeToken`'s `callBackUrl`
+  Relying Party ->> Relying Party: Verify the `responseToken`
+  Relying Party ->> Relying Party: Verify the `responseToken`'s challenge token (valid JWT, signed by Relying Party, and not used before)
+  Relying Party -->>- Wallet: Return success
 
   opt `redirectUrl` or `challengeToken` is provided
     alt `redirectUrl` is provided
@@ -627,9 +627,9 @@ sequenceDiagram
 sequenceDiagram
   title: Request/Share (Link)
 
-  User ->>+ Verifiers's Interface: Click link
+  User ->>+ Verifier's Interface: Click link
 
-  Verifiers's Interface ->>- Wallet: Open Wallet with deep link
+  Verifier's Interface ->>- Wallet: Open Wallet with deep link
 
   activate Wallet
 
