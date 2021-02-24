@@ -669,6 +669,8 @@ Because the [Credential Manifest spec](https://identity.foundation/credential-ma
 
 This is the CM spec as of 02/22/2021.
 
+Alterations in the spec are colored in <span style="color:darkgreen;">green</span>
+
 ---
 
 Credential Manifest
@@ -851,7 +853,7 @@ The `credential` property of a `Credential Manifest` is an object that ****MAY**
 
 The _Display Mapping Objects_ are JSON objects constructed as follows:
 
-- The object ****MAY**** contain a `path` property, and if present, its value ****MUST**** be a [JSONPath](https://goessner.net/articles/JsonPath/) string expression.
+- The object ****MAY**** contain a `path` property, and if present, its value ****MUST**** be a [JSONPath](https://goessner.net/articles/JsonPath/) string expression <span style="color:darkgreen;">and the result ****MUST**** be a string or numeric value that is rendered in the UI<span>.
 - The object ****MAY**** contain a `text` property, and if present, its value ****MUST**** be a string or numeric value that is rendered in the UI if no `path` property is specified within the object, or all of the `path` property's array of [JSONPath](https://goessner.net/articles/JsonPath/) string expressions fail to select data within the target credential.
 - The object ****MAY**** contain a `label` property, and if present, its value ****MUST**** be a string that is rendered in the UI if the property for which the object defines is appropreate for labeled data display. If the property is intended for labeled display, the label ****SHOULD**** be shown in the UI and the value paired with the label ****SHOULD**** be either data selected from the processing of the `path` property's [JSONPath](https://goessner.net/articles/JsonPath/) string expressions, or the value specified by the `text` property. If neither is present, display of the label and any fallback value is at the election of the implementer.
 
