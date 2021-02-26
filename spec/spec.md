@@ -46,12 +46,14 @@ All interactions use the same common blocks:
 
 This is the payload that is displayed in a QR code or added as a query param to a link.
 
+::: example QR/Link Payload
 ```json
 {
   "challengeTokenUrl": "https://example.com/api/get-token/fb28b4ec-4209-4b78-8507-7cc49164cb37",
   "version": "..."
 }
 ```
+:::
 
 - `challengeTokenUrl`:
   - MUST be unique to the interaction
@@ -63,43 +65,50 @@ This is the payload that is displayed in a QR code or added as a query param to 
 
 The result from `GET`ing the provided `challengeTokenUrl`. This contains the initial JWT that really starts the interaction.
 
+::: example Token URL Response
 ```json
 {
   "challengeToken": "{{JWT String}}"
 }
 ```
+:::
 
 #### Challenge Token
-
+::: example Challenge Token Header
 ```json
+// Header
 {
-  "header": {
-    "alg": "...",
-    "kid": "did:example:ebfeb1f712ebc6f1c276e12ec21#primary"
-  },
-  "payload": {
-    "jti": "...",
-    "iss": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-    "aud": "...",
-    "callbackUrl": "https://example.com/api/callback-url",
-    "purpose": "...",
-    "version": "..."
-  }
+  "alg": "...",
+  "kid": "did:example:ebfeb1f712ebc6f1c276e12ec21#primary"
 }
 ```
+:::
 
-- `header`
-  - MUST have `alg` and `kid`, so the JWT can be verified
-- `payload`
-  - MUST have `iss`
-  - MUST have `jti` to protect against replay attacks
-  - CAN have `aud` if the DID of the wallet is known
-  - MUST have `callbackUrl`
-    - MUST be a `POST` endpoint to take the wallet's reponse (determined by the `purpose`)
-  - MUST have `purpose`
-    - See [Purpose](#purpose) below
-  - MUST have `version`
-    - This is specific to the `purpose`
+- MUST have `alg` and `kid`, so the JWT can be verified
+
+
+::: example Challenge Token Payload
+```json
+// Payload
+{
+  "jti": "...",
+  "iss": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+  "aud": "...",
+  "callbackUrl": "https://example.com/api/callback-url",
+  "purpose": "...",
+  "version": "..."
+}
+```
+:::
+
+- MUST have `iss`
+- MUST have `jti` to protect against replay attacks
+- CAN have `aud` if the DID of the wallet is known
+- MUST have `callbackUrl`
+  - MUST be a `POST` endpoint to take the wallet's reponse (payload determined by the `purpose`)
+- MUST have `purpose`
+- MUST have `version`
+  - This is specific to the `purpose`
 
 ### Callback URL
 
@@ -107,12 +116,14 @@ The result from `GET`ing the provided `challengeTokenUrl`. This contains the ini
 
 Each interaction will `POST` data to the `callbackUrl`:
 
+::: example Callback URL Request Payload
 ```json
 {
   "responseToken": "{{Signed JWT}}",
   "from": "qr" | "link"
 }
 ```
+:::
 
 - `responseToken`
   - A JWT signed by the user, will contain the `challengeToken`
@@ -124,48 +135,56 @@ Each interaction will `POST` data to the `callbackUrl`:
 
 The response token is signed by the user and acts as a way to prove ownership of their DID and to pass aditional data back to the relying party.
 
+:::example Response Token Header
 ```json
 {
-  "header": {
-    "alg": "...",
-    "kid": "did:example:c276e12ec21ebfeb1f712ebc6f1#primary"
-  },
-  "payload": {
-    "iss": "did:example:c276e12ec21ebfeb1f712ebc6f1",
-    "aud": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-    "challenge": "{{CHALLENGE TOKEN}}"
-  }
+  "alg": "...",
+  "kid": "did:example:c276e12ec21ebfeb1f712ebc6f1#primary"
 }
 ```
+:::
 
-- `header`
-  - MUST have `alg` and `kid`, so the JWT can be verified
-- `payload`
-  - MUST have `iss`
-  - MUST have `aud`
-    - `aud` MUST be the `iss` of the challenge token
-  - MUST have `challenge`
-    - `challenge` MUST be the challenge token given by the issuer
+- MUST have `alg` and `kid`, so the JWT can be verified
+
+:::example Response Token Payload
+```json
+{
+  "iss": "did:example:c276e12ec21ebfeb1f712ebc6f1",
+  "aud": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+  "challenge": "{{CHALLENGE TOKEN}}"
+}
+```
+:::
+
+- MUST have `iss`
+- MUST have `aud`
+  - `aud` MUST be the `iss` of the challenge token
+- MUST have `challenge`
+  - `challenge` MUST be the challenge token given by the issuer
 
 #### Reponse
 
 The `POST` to the provided `callbackUrl` can return with a simple successful HTTP response or it can return a success with follow up details. A `redirectLink` that the app will open in a browser or `challengeToken` that will start a new interaction.
 
+::: example Response Redirect Payload
 ```json
 {
   "redirectUrl": "https://example.com/redirect-url?id={{Some id that identifies the user}}"
 }
 ```
+:::
 
 This could be used to show a success message or bring them back to the website/app to continue where they left off. Most of the time `redirectUrl` will only be used when the user is already using their phone (see [above](#qr-code-or-link)).
 
 **OR**
 
+::: example Response Chain Payload
 ```json
 {
   "challengeToken": "{{JWT String}}"
 }
 ```
+:::
 
 This could be used to follow up a request interaction with an offer interaction, or even a chain of request interactions that are based on the previously shared VCs.
 
@@ -263,38 +282,45 @@ The offer/claim interaction is for the use case where an issuer wants to give cr
 
 An example of an `offer` challenge token has the following properties (in addition to the base [properties](#challenge-token)):
 
+:::example Offer Challenge Token Header
 ```json
+// Header
 {
-  "header": {
-    "alg": "...",
-    "kid": "did:example:ebfeb1f712ebc6f1c276e12ec21#primary"
-  },
-  "payload": {
-    "jti": "...",
-    "iss": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-    "aud": "...",
-    "callbackUrl": "https://example.com/api/callback-url",
-    "purpose": "offer",
-    /* Using [Credential Manifest](#credential-manifest-working-copy) to define the available credentials */
-    "credential_manifest": {
-      "issuer": {
-        /* ... */
-      },
-      "credential": {
-        /* ... */
-      },
-      "presentation_definition": {
-        /* ... */
-      }
+  "alg": "...",
+  "kid": "did:example:ebfeb1f712ebc6f1c276e12ec21#primary"
+}
+```
+:::
+
+:::example Offer Challenge Token Payload
+```json
+// Payload
+{
+  "jti": "...",
+  "iss": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+  "aud": "...",
+  "callbackUrl": "https://example.com/api/callback-url",
+  "purpose": "offer",
+  "version": "1",
+  /* Using [Credential Manifest](#credential-manifest-working-copy) to define the available credentials */
+  "credential_manifest": {
+    "issuer": {
+      /* ... */
+    },
+    "credential": {
+      /* ... */
+    },
+    "presentation_definition": {
+      /* ... */
     }
   }
 }
 ```
+:::
 
-- `payload`
-  - `purpose` MUST be `"offer"`
-  - MUST have `credential_manifest`
-    - If the `credential_manifest` provides a `presentation_definition` the response MUST include a `verifiable_presentation`
+- `purpose` MUST be `"offer"`
+- MUST have `credential_manifest`
+  - If the `credential_manifest` provides a `presentation_definition` the response MUST include a `verifiable_presentation`
 
 ### Callback URL
 
@@ -302,51 +328,60 @@ An example of an `offer` challenge token has the following properties (in additi
 
 The offer/claim interaction follows the standard [Callback URL Request](#request) payload, but the `responseToken`'s is specific to the this interaction.
 
+:::example Offer Callback URL Request Payload
 ```json
 {
   "responseToken": "{{Signed JWT}}",
   "from": "qr" | "link"
 }
 ```
+:::
 
 ##### Response Token
 
 In addition to the standard `responseToken` the offer/claim interaction adds `verifiable_presentation` to the payload.
 
+:::example Offer Response Token Header
 ```json
+// Header
 {
-  "header": {
-    "alg": "...",
-    "kid": "did:example:c276e12ec21ebfeb1f712ebc6f1#primary"
-  },
-  "payload": {
-    "iss": "did:example:c276e12ec21ebfeb1f712ebc6f1",
-    "aud": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-    "challenge": "{{CHALLENGE TOKEN}}",
-    "verifiable_presentation": {
-      /* ... */
-      "type": [
-        "VerifiablePresentation",
-        "PresentationSubmission"
-      ],
-      "presentation_submission": {
-        /* Using Presentation Exchange's [Presentation Submission](https://identity.foundation/presentation-exchange/#presentation-submission) */
-        /* ... */
-      }
+  "alg": "...",
+  "kid": "did:example:c276e12ec21ebfeb1f712ebc6f1#primary"
+}
+```
+:::
+
+:::example Offer Response Token Payload
+```json
+// Payload
+{
+  "iss": "did:example:c276e12ec21ebfeb1f712ebc6f1",
+  "aud": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+  "challenge": "{{CHALLENGE TOKEN}}",
+  "verifiable_presentation": {
+    /* ... */
+    "type": [
+      "VerifiablePresentation",
+      "PresentationSubmission"
+    ],
+    "presentation_submission": {
+      /* Using Presentation Exchange's [Presentation Submission](https://identity.foundation/presentation-exchange/#presentation-submission) */
       /* ... */
     }
+    /* ... */
   }
 }
 ```
+:::
 
-- `payload`
-  - MUST have `verifiable_presentation` IF the challenge token provides a `presentation_definition`
-    - This `VerifiablePresentation`  MUST be a `PresentationSubmission`
+- MUST have `verifiable_presentation` IF the challenge token provides a `presentation_definition`
+  - This `VerifiablePresentation`  MUST be a `PresentationSubmission`
 
 #### Response
 
 In addition to the standard [Callback URL Response](#response) payload, the offer/claim flow adds `credentials`:
 
+:::example Offer Default Response Payload
 ```json
 {
   "credentials": [
@@ -357,9 +392,11 @@ In addition to the standard [Callback URL Response](#response) payload, the offe
   ]
 }
 ```
+:::
 
 **OR**
 
+:::example Offer Redirect Response Payload
 ```json
 {
   "credentials": [
@@ -371,9 +408,11 @@ In addition to the standard [Callback URL Response](#response) payload, the offe
   "redirectUrl": "https://example.com/redirect-url?id={{Some id that identifies the user}}"
 }
 ```
+:::
 
 **OR**
 
+:::example Offer Chain Response Payload
 ```json
 {
   "credentials": [
@@ -385,6 +424,7 @@ In addition to the standard [Callback URL Response](#response) payload, the offe
   "challengeToken": "{{JWT String}}"
 }
 ```
+:::
 
 - `credentials` MUST be an array of Verifiable Credentials issued to the user.
 
@@ -496,31 +536,38 @@ The request/share interaction is for the use case where an verifier wants a user
 
 ### Challenge Token
 
-An example of a `request` challenge token has the following properties (in addition to the base [properties](#challenge-token-1)):
+An example of a `request` challenge token has the following properties (in addition to the base [properties](#challenge-token)):
 
+:::example Request Challenge Token Header
 ```json
+// Header
 {
-  "header": {
-    "alg": "...",
-    "kid": "did:example:ebfeb1f712ebc6f1c276e12ec21#primary"
-  },
-  "payload": {
-    "jti": "...",
-    "iss": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-    "aud": "...",
-    "callbackUrl": "https://example.com/api/callback-url",
-    "purpose": "request",
-    /* Using [Presentation Exchange](https://identity.foundation/presentation-exchange/) to define the requirements */
-    "presentation_definition": {
-      // ...
-    }
+  "alg": "...",
+  "kid": "did:example:ebfeb1f712ebc6f1c276e12ec21#primary"
+}
+```
+:::
+
+:::example Request Challenge Token Payload
+```json
+// Payload
+{
+  "jti": "...",
+  "iss": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+  "aud": "...",
+  "callbackUrl": "https://example.com/api/callback-url",
+  "purpose": "request",
+  "version": "1",
+  /* Using [Presentation Exchange](https://identity.foundation/presentation-exchange/) to define the requirements */
+  "presentation_definition": {
+    // ...
   }
 }
 ```
+:::
 
-- `payload`
-  - `purpose` MUST be `"request"`
-  - MUST have `presentation_definition`
+- `purpose` MUST be `"request"`
+- MUST have `presentation_definition`
 
 ### Callback URL
 
@@ -528,48 +575,56 @@ An example of a `request` challenge token has the following properties (in addit
 
 In addition to the standard [Callback URL Request](#request) payload, the offer/claim flow adds `presentation`
 
+:::example Request Callback URL Request Payload
 ```json
 {
   "responseToken": "{{Signed JWT}}",
   "from": "qr" | "link"
 }
 ```
+:::
+
 
 ##### Response Token
 
 In addition to the standard `responseToken` the offer/claim interaction adds `verifiable_presentation` to the payload.
 
+:::example Request Response Token Header
 ```json
+// Header
 {
-  "header": {
-    "alg": "...",
-    "kid": "did:example:c276e12ec21ebfeb1f712ebc6f1#primary"
-  },
-  "payload": {
-    "iss": "did:example:c276e12ec21ebfeb1f712ebc6f1",
-    "aud": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-    "challenge": "{{CHALLENGE TOKEN}}",
-    "verifiable_presentation": {
-      /* ... */
-      "type": [
-        "VerifiablePresentation",
-        "PresentationSubmission"
-      ],
-      "presentation_submission": {
-        /* Using Presentation Exchange's [Presentation Submission](https://identity.foundation/presentation-exchange/#presentation-submission) */
-        /* ... */
-      }
+  "alg": "...",
+  "kid": "did:example:c276e12ec21ebfeb1f712ebc6f1#primary"
+}
+```
+:::
+
+:::example Request Response Token Payload
+```json
+// Paylaod
+{
+  "iss": "did:example:c276e12ec21ebfeb1f712ebc6f1",
+  "aud": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+  "challenge": "{{CHALLENGE TOKEN}}",
+  "verifiable_presentation": {
+    /* ... */
+    "type": [
+      "VerifiablePresentation",
+      "PresentationSubmission"
+    ],
+    "presentation_submission": {
+      /* Using Presentation Exchange's [Presentation Submission](https://identity.foundation/presentation-exchange/#presentation-submission) */
       /* ... */
     }
+    /* ... */
   }
 }
-
 ```
+:::
 
-- `payload`
-  - MUST have `verifiable_presentation`
-    - This `VerifiablePresentation`  MUST be a `PresentationSubmission`
-    - This `VerifiablePresentation`'s `proof.challenge` MUST be the challenge token given by the issuer
+- MUST have `verifiable_presentation`
+  - This `VerifiablePresentation`  MUST be a `PresentationSubmission`
+  - This `VerifiablePresentation`'s `proof.challenge` MUST be the challenge token given by the issuer
 
 #### Response
 
