@@ -4,4 +4,4 @@
 
 QR Codes and Links for wallet and credential interactions.
 
-Latest spec: [specs.bloom.co/wallet-and-credential-interactions](https://specs.bloom.co/wallet-and-credential-interactions/)
+Latest spec: [identity.foundation/wallet-and-credential-interactions](https://identity.foundation/wallet-and-credential-interactions/)
