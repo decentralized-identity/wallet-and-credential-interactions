@@ -12,9 +12,9 @@
 ~ [Jace Hensley](https://www.linkedin.com/in/jacehensley/) (Bloom)
 
 **Participate:**
-~ [GitHub repo](https://github.com/hellobloom/wallet-and-credential-interactions)
-~ [File a bug](https://github.com/hellobloom/wallet-and-credential-interactions/issues)
-~ [Commit history](https://github.com/hellobloom/wallet-and-credential-interactions/commits/master)
+~ [GitHub repo](https://github.com/decentralized-identity/wallet-and-credential-interactions)
+~ [File a bug](https://github.com/decentralized-identity/wallet-and-credential-interactions/issues)
+~ [Commit history](https://github.com/decentralized-identity/wallet-and-credential-interactions/commits/master)
 
 ---
 
