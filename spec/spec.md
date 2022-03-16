@@ -32,17 +32,19 @@ All interactions use the same common blocks:
 
 ### QR Code or Link
 
-Two ways of initiating an interaction is for the relying party to display either a QR code or a link to the user. There could be other ways to initiate an interaction but this document will be discussing QR codes and links.
+This document focuses on two common ways for a relying party to initiate an interaction: by presenting a QR code or a link to the user.
 
-If the user is using an app/webiste on something other than the device that their wallet is on, then they would be able to scan a QR code with the wallet. _But_ if the user is using the device that also has their wallet then they wouldn't be able to scan a QR code, they would need to be able to click a link that will open their mobile wallet.
+If the user's wallet is on a separate device from relying party's app/website, the user would scan a QR code with the wallet device to proceed with the interaction; otherwise the user would click a link to proceed.
 
-There are of course other use cases where you might need one over the other or both. For example, in an email you may want to display both a link and a QR code because you won't be able to dynamically choose between the two.
+There are use cases where either or both options should be presented. For example, in an email the relying party may want to include both a link and a QR code because they cannot dynamically choose between the two.
 
-### Payload
+### Challenge Token URL Payload
 
-Some mediums do not allow for a large amount of data to be sent (e.g a QR code) to support those cases the initial payload contains instructions for fetching the challenge token.
+The initial payload consists of a `challengeTokenUrl`, which is a URL at which the challenge token can be retrieved, and a `version`.
 
-This is payload can be displayed in a QR code or added to a link as a query parameter.
+The initial payload contains instructions for fetching the challenge token, rather than the challenge token itself, to enable mediums with size restrictions, such as QR codes.
+
+The payload can be displayed as a QR code or as a link with a query parameter, as follows:
 
 <tab-panels selected-index="0">
 
@@ -82,9 +84,9 @@ This is payload can be displayed in a QR code or added to a link as a query para
 - `version`:
   - This is the version of just the QR/link payload, not the rest of the interaction
 
-### Token URL Response
+### Challenge Token URL Response
 
-The result from `GET`ing the provided `challengeTokenUrl`. This contains the initial JWT that really starts the interaction.
+The wallet `GET`s the payload from the provided `challengeTokenUrl`. This payload contains a JWT containing information about the data requested from the wallet and a callback URL where the data should be sent.
 
 ::: example Token URL Response
 
@@ -97,6 +99,8 @@ The result from `GET`ing the provided `challengeTokenUrl`. This contains the ini
 :::
 
 #### Challenge Token
+
+Common elements of the Challenge Token payload are listed below. The value of `purpose` will determine which additional field(s) will appear, as described in the subsequent sections.
 
 ::: example Challenge Token Header
 
@@ -134,6 +138,7 @@ The result from `GET`ing the provided `challengeTokenUrl`. This contains the ini
 - MUST have `callbackUrl`
   - MUST be a `POST` endpoint to take the wallet's reponse (payload determined by the `purpose`)
 - MUST have `purpose`
+  - value MUST be `offer` or `request`
 - MUST have `version`
   - This is specific to the `purpose`
 
